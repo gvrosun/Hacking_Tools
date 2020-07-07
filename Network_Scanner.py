@@ -1,6 +1,16 @@
 #!/usr/bin/env python
 
 import scapy.all as scapy
+import optparse
+
+
+def get_arguments():
+    parser = optparse.OptionParser()
+    parser.add_option("-t", "--target", dest="target", help="Range of ip address to discover in the network")
+    (option, arguments) = parser.parse_args()
+    if not option.target:
+        parser.error("\n[-] Please specify the target ip, use --help for more info")
+    return option
 
 
 def scan(ip):
@@ -23,5 +33,6 @@ def print_result(results_list):
         print(client["ip"] + "\t\t" + client["mac"])
 
 
-scan_result = scan("10.0.2.1/24")
+target_ips = get_arguments().target
+scan_result = scan(target_ips)
 print_result(scan_result)
