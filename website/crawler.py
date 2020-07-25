@@ -10,11 +10,11 @@ def request(url):
         pass
 
 
-target_url = "google.com"
-with open("/root/Downloads/dnscan-master/subdomains.txt", "r") as word_list:
+target_url = "10.0.2.5/mutillidae"
+with open("/root/Downloads/dirs.txt", "r") as word_list:
     for line in word_list:
         word = line.strip()
-        test_url = word + "." + target_url
+        test_url = target_url + "/" + word
         response = request(test_url)
         if response:
-            print("[+] Discovered subdomain --> " + test_url)
+            print("[+] Discovered URL --> " + test_url)
