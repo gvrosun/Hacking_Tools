@@ -2,7 +2,7 @@
 
 import requests
 import re
-import urlparse
+import urllib.parse as urlparse
 from bs4 import BeautifulSoup
 
 
@@ -15,7 +15,7 @@ class Scanner:
 
     def extract_links(self, url):
         response = self.session.get(url)
-        return re.findall('(?:href=")(.*?)"', response.content)
+        return re.findall('(?:href=")(.*?)"', response.content.decode(errors="ignore"))
 
     def crawl(self, url=None):
         if url is None:
@@ -50,7 +50,7 @@ class Scanner:
             if input_type == "text":
                 input_value = value
             post_data[input_name] = input_value
-        if method is "post":
+        if method == "post":
             return self.session.post(post_url, data=post_data)
         else:
             return self.session.get(post_url, params=post_data)
@@ -73,10 +73,10 @@ class Scanner:
     def test_xss_in_form(self, form, url):
         xss_test_script = "<sCript>alert('test')</scriPt>"
         response = self.submit_form(form=form, value=xss_test_script, url=url)
-        return xss_test_script in response.content
+        return xss_test_script in response.content.decode(errors="ignore")
 
     def test_xss_in_link(self, url):
         xss_test_script = "<sCript>alert('test')</scriPt>"
         url = url.replace("=", "=" + xss_test_script)
         response = self.session.get(url)
-        return xss_test_script in response.content
+        return xss_test_script in response.content.decode(errors="ignore")
