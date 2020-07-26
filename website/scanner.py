@@ -69,3 +69,10 @@ class Scanner:
         response = self.submit_form(form=form, value=xss_test_script, url=url)
         if xss_test_script in response.content:
             return True
+
+    def test_xss_in_link(self, url):
+        xss_test_script = "<sCript>alert('test')</scriPt>"
+        url = url.replace("=", "=" + xss_test_script)
+        response = self.session.get(url)
+        if xss_test_script in response.content:
+            return True
